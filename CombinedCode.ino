@@ -72,7 +72,7 @@ void setup() {
   pinMode(motorPin9, OUTPUT);
   pinMode(motorPin10, OUTPUT);
   pinMode(rotormotorpin, OUTPUT);
-  significantchangeid = 0;
+  significantchangeid = 1;
 }
 
 void loop() {  
@@ -133,97 +133,20 @@ void loop() {
     prevTurbidity = turbidity;
   }
   if (significantchange){
-    if (significantchangeid = 0){
-      significantchange = false;
-      digitalWrite(motorPin1, HIGH);
-      delay(15000);
-      digitalWrite(motorPin1, LOW);
-      significantchangeid = significantchangeid + 1;
-      digitalWrite(rotormotorpin, HIGH);
-      delay(2500);
+    for (int i=1; i<11; i++){
+      if (significantchangeid == i){
+        significantchange = false;
+        digitalWrite(motorPin1 + i, HIGH);
+        delay(15000);
+        digitalWrite(motorPin1 + i, LOW);
+        significantchangeid = significantchangeid + 1;
+        digitalWrite(rotormotorpin, HIGH);
+        delay(2500);
+        digitalWrite(rotormotorpin, LOW);-
+        break;
+      }
     }
-    else if (significantchangeid = 1){
-      significantchange = false;
-      digitalWrite(motorPin2, HIGH);
-      delay(15000);
-      digitalWrite(motorPin2, LOW);
-      significantchangeid = significantchangeid + 1;
-      digitalWrite(rotormotorpin, HIGH);
-      delay(2500);
-    }
-    else if (significantchangeid = 2){
-      significantchange = false;
-      digitalWrite(motorPin3, HIGH);
-      delay(15000);
-      digitalWrite(motorPin3, LOW);
-      significantchangeid = significantchangeid + 1;
-      digitalWrite(rotormotorpin, HIGH);
-      delay(2500);
-    }
-    else if (significantchangeid = 3){
-      significantchange = false;
-      digitalWrite(motorPin4, HIGH);
-      delay(15000);
-      digitalWrite(motorPin4, LOW);
-      significantchangeid = significantchangeid + 1;
-      digitalWrite(rotormotorpin, HIGH);
-      delay(2500);
-    }
-    else if (significantchangeid = 4){
-      significantchange = false;
-      digitalWrite(motorPin5, HIGH);
-      delay(15000);
-      digitalWrite(motorPin5, LOW);
-      significantchangeid = significantchangeid + 1;
-      digitalWrite(rotormotorpin, HIGH);
-      delay(2500);
-    }
-    else if (significantchangeid = 5){
-      significantchange = false;
-      digitalWrite(motorPin6, HIGH);
-      delay(15000);
-      digitalWrite(motorPin6, LOW);
-      significantchangeid = significantchangeid + 1;
-      digitalWrite(rotormotorpin, HIGH);
-      delay(2500);
-    }
-    else if (significantchangeid = 6){
-      significantchange = false;
-      digitalWrite(motorPin7, HIGH);
-      delay(15000);
-      digitalWrite(motorPin7, LOW);
-      significantchangeid = significantchangeid + 1;
-      digitalWrite(rotormotorpin, HIGH);
-      delay(2500);
-    }
-    else if (significantchangeid = 7){
-      significantchange = false;
-      digitalWrite(motorPin8, HIGH);
-      delay(15000);
-      digitalWrite(motorPin8, LOW);
-      significantchangeid = significantchangeid + 1;
-      digitalWrite(rotormotorpin, HIGH);
-      delay(2500);
-    }
-    else if (significantchangeid = 8){
-      significantchange = false;
-      digitalWrite(motorPin9, HIGH);
-      delay(15000);
-      digitalWrite(motorPin9, LOW);
-      significantchangeid = significantchangeid + 1;
-      digitalWrite(rotormotorpin, HIGH);
-      delay(2500);
-    }
-    else if (significantchangeid = 9){
-      significantchange = false;
-      digitalWrite(motorPin10, HIGH);
-      delay(15000);
-      digitalWrite(motorPin10, LOW);
-      significantchangeid = significantchangeid + 1;
-      digitalWrite(rotormotorpin, HIGH);
-      delay(2500);
-    }
-    else if (significantchangeid = 10){
+    if (significantchangeid == 11){
       significantchange = false;
     }
     else {
