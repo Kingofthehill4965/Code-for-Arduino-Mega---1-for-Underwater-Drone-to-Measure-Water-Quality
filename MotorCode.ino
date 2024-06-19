@@ -8,6 +8,7 @@ const int motorpin7 = 7;
 const int motorpin8 = 8;
 const int motorpin9 = 9;
 const int motorpin10 = 10;
+const int rotormotorpin = 11;
 
 const int totalCycles = 15;
 
@@ -22,6 +23,7 @@ void setup() {
   pinMode(motorPin8, OUTPUT);
   pinMode(motorPin9, OUTPUT);
   pinMode(motorPin10, OUTPUT);
+  pinMode(rotormotorpin, OUTPUT);
 }
 
 void loop() {
@@ -29,42 +31,69 @@ void loop() {
   delay(15000);
   digitalWrite(motorPin1, LOW);
   delay(300000);
+  digitalWrite(rotormotorpin, HIGH);
+  delay(2500);
+  digitalWrite(rotormotorpin, LOW);
   digitalWrite(motorPin2, HIGH);
   delay(15000);
   digitalWrite(motorPin2, LOW);
   delay(300000);
+  digitalWrite(rotormotorpin, HIGH);
+  delay(2500);
+  digitalWrite(rotormotorpin, LOW);
   digitalWrite(motorPin3, HIGH);
   delay(15000);
   digitalWrite(motorPin3, LOW);
   delay(300000);
+  digitalWrite(rotormotorpin, HIGH);
+  delay(2500);
+  digitalWrite(rotormotorpin, LOW);
   digitalWrite(motorPin4, HIGH);
   delay(15000);
   digitalWrite(motorPin4, LOW);
   delay(300000);
+  digitalWrite(rotormotorpin, HIGH);
+  delay(2500);
+  digitalWrite(rotormotorpin, LOW);
   digitalWrite(motorPin5, HIGH);
   delay(15000);
   digitalWrite(motorPin5, LOW);
   delay(300000);
+  digitalWrite(rotormotorpin, HIGH);
+  delay(2500);
+  digitalWrite(rotormotorpin, LOW);
   digitalWrite(motorPin6, HIGH);
   delay(15000);
   digitalWrite(motorPin6, LOW);
   delay(300000);
+  digitalWrite(rotormotorpin, HIGH);
+  delay(2500);
+  digitalWrite(rotormotorpin, LOW);
   digitalWrite(motorPin7, HIGH);
   delay(15000);
   digitalWrite(motorPin7, LOW);
   delay(300000);
+  digitalWrite(rotormotorpin, HIGH);
+  delay(2500);
+  digitalWrite(rotormotorpin, LOW);
   digitalWrite(motorPin8, HIGH);
   delay(15000);
   digitalWrite(motorPin8, LOW);
   delay(300000);
+  digitalWrite(rotormotorpin, HIGH);
+  delay(2500);
+  digitalWrite(rotormotorpin, LOW);
   digitalWrite(motorPin9, HIGH);
   delay(15000);
   digitalWrite(motorPin9, LOW);
   delay(300000);
+  digitalWrite(rotormotorpin, HIGH);
+  delay(2500);
+  digitalWrite(rotormotorpin, LOW);
   digitalWrite(motorPin10, HIGH);
   delay(15000);
   digitalWrite(motorPin10, LOW);
   while (true) {
-    // Infinite loop to keep the motor off after the cycles are completed
+    // Infinite loop to keep the motors off after the cycles are completed
   }
 }
