@@ -9,8 +9,6 @@
 #include <Adafruit_GPS.h>
 #include <SoftwareSerial.h>
 
-RTC_DS1307 rtc;
-
 #define ONE_WIRE_BUS 2
 #define TdsSensorPin A1
 GravityTDS gravityTds;
