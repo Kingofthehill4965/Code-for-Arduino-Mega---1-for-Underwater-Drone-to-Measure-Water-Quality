@@ -14,7 +14,8 @@
 GravityTDS gravityTds;
 
 float significantchangeid;
-
+ 
+unsigned char data[4]={};
 char c;
 
 float tempC; 
@@ -37,6 +38,7 @@ float prevTds = 0;
 float prevPh = 0;
 float prevTurbidity = 0;
 
+float distance;
 float tempchange = 0;
 float tdschange = 0;
 float phchange = 0;
@@ -57,6 +59,7 @@ const int rotormotorpin = 50;
 int chipSelect= 53;
 File mySensorData;
 
+SoftwareSerial mySerial2(11,10); // RX, TX 
 SoftwareSerial mySerial(3, 2);
 Adafruit_GPS GPS(&mySerial);
 
@@ -89,6 +92,19 @@ void setup() {
 }
 
 void loop() {  
+  for(int i=0;i<4;i++){
+       data[i]=mySerial2.read();
+     }
+  while(mySerial2.read()==0xff);
+    mySerial2.flush();
+  if(data[0]==0xff){
+    int sum;
+    sum=(data[0]+data[1]+data[2])&0x00FF;
+    if(sum==data[3]){
+        distance=(data[1]<<8)+data[2];
+        distance=distance / 10;
+        }
+     }
   mySensorData = SD.open("test.txt",FILE_WRITE);
   gravityTds.setTemperature(temperature);
   gravityTds.update();
@@ -129,6 +145,9 @@ void loop() {
     mySensorData.print(turbidity);
     mySensorData.println(",");
     mySensorData.print(Ec);
+    mySensorData.print("Distance from riverbed : ");
+    mySensorData.print(distance);
+    mySensorData.print("cm");
     clearGPS();
     while (!GPS.newNMEAreceived()) {
       c = GPS.read();
