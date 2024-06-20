@@ -33,6 +33,11 @@ float prevTds = 0;
 float prevPh = 0;
 float prevTurbidity = 0;
 
+float tempchange = 0;
+float tdschange = 0;
+float phchange = 0;
+float turbiditychange = 0;
+
 const int motorPin1 = 40;
 const int motorpin2 = 41;
 const int motorpin3 = 42;
@@ -116,19 +121,28 @@ void loop() {
     mySensorData.print(turbidity);
     mySensorData.println(",");
     mySensorData.print(Ec);
-    if (abs(tempC - prevTemp) > temp_threshold){
+
+  tempchange = tempC - prevTemp;
+  tdschange = tdsValue - prevTds;
+  phchange = ph_act - prevPh;
+  turbiditychange = turbidity - prevTurbidity;
+  if (abs(tempchange) > temp_threshold){
+    log = "Temperature," + " Change : " + tempchange + ", Previous : " + prevTemp + ", Current : " + tempC;
     significantchange = true;
     prevTemp = tempC;
   }
-  if (abs(tdsValue - prevTds) > tds_threshold){
+  if (abs(tdschange) > tds_threshold){
+    log = "TDS," + " Change : " + tdschange + ", Previous : " + prevTds + ", Current : " + tdsValue;
     significantchange = true;
     prevTds = tdsValue;
   }
-  if (abs(ph_act - prevPh) > ph_threshold){
+  if (abs(phchange) > ph_threshold){
+    log = "PH," + " Change : " + phchange + ", Previous : " + prevPh + ", Current : " + ph_act;
     significantchange = true;
     prevPh = ph_act;
   }
-  if (abs(turbidity - prevTurbidity) > turbidity_threshold){
+  if (abs(turbiditychange) > turbidity_threshold){
+    log = "Turbidity," + " Change : " + turbiditychange + ", Previous : " + prevTurbidity + ", Current : " + turbidity;
     significantchange = true;
     prevTurbidity = turbidity;
   }
@@ -138,6 +152,11 @@ void loop() {
         significantchange = false;
         digitalWrite(motorPin1 + i, HIGH);
         delay(15000);
+        mySensorData.println("Significant change, ");
+        mySensorData.println("id : -");
+        mySensorData.print(significantchangeid);
+        mySensorData.print("reason : ");
+        mySensorData.print(log);
         digitalWrite(motorPin1 + i, LOW);
         significantchangeid = significantchangeid + 1;
         digitalWrite(rotormotorpin, HIGH);
