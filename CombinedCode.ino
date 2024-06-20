@@ -7,16 +7,19 @@
 #include <SD.h>
 #include <SPI.h>
 #include "RTClib.h"
+#include <Adafruit_GPS.h>
+#include <SoftwareSerial.h>
 
 RTC_DS1307 rtc;
-
-char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
 #define ONE_WIRE_BUS 2
 #define TdsSensorPin A1
 GravityTDS gravityTds;
 
 float significantchangeid;
+
+char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+char c;
 
 float tempC; 
 float temperature = tempC,tdsValue = 0;
@@ -58,6 +61,9 @@ const int rotormotorpin = 50;
 int chipSelect= 53;
 File mySensorData;
 
+SoftwareSerial mySerial(3, 2);
+Adafruit_GPS GPS(&mySerial);
+
 OneWire oneWire(ONE_WIRE_BUS);
 
 DallasTemperature sensors(&oneWire);
@@ -69,7 +75,6 @@ void setup() {
     // following line sets the RTC to the date & time this sketch was compiled
     rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
 
-  Serial.begin(9600);
   gravityTds.setPin(TdsSensorPin);
   gravityTds.setAref(5.0);
   gravityTds.setAdcRange(1024);
@@ -89,6 +94,8 @@ void setup() {
   pinMode(motorPin10, OUTPUT);
   pinMode(rotormotorpin, OUTPUT);
   significantchangeid = 1;
+  GPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGA);
+  GPS.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ);
 }
 
 void loop() {  
@@ -120,7 +127,7 @@ void loop() {
   int sensorValue = analogRead(A2);
   int turbidity =map(sensorValue,0,700,100,0);  
   if(mySensorData){
-    Serial.println("1");
+    MySensorData.println("1");
     mySensorData.print(tdsValue,0);
     mySensorData.println(",");
     mySensorData.print(ph_act);
@@ -147,6 +154,50 @@ void loop() {
     mySensorData.print(':');
     mySensorData.print(now.second(), DEC);
     mySensorData.println();
+    clearGPS();
+    while (!GPS.newNMEAreceived()) {
+      c = GPS.read();
+    }
+    GPS.parse(GPS.lastNMEA());
+    MySensorData.print("Time: ");
+    MySensorData.print(GPS.hour, DEC);
+    MySensorData.print(':');
+    MySensorData.print(GPS.minute, DEC);
+    MySensorData.print(':');
+    MySensorData.print(GPS.seconds, DEC);
+    MySensorData.print('.');
+    MySensorDataorData.println(GPS.milliseconds);
+    MySensorData.print("Date: ");
+    MySensorData.print(GPS.day, DEC);
+    MySensorData.print('/');
+    MySensorData.print(GPS.month, DEC);
+    MySensorData.print("/20");
+    MySensorData.println(GPS.year, DEC);
+    MySensorData.print("Fix: ");
+    MySensorData.print(GPS.fix);
+    MySensorData.print(" quality: ");
+    MySensorData.println(GPS.fixquality);
+    MySensorData.print("Satellites: ");
+    MySensorData.println(GPS.satellites);
+    if (GPS.fix) {
+      MySensorData.print("Location: ");
+      MySensorData.print(GPS.latitude, 4);
+      MySensorData.print(GPS.lat);
+      MySensorData.print(", ");
+      MySensorData.print(GPS.longitude, 4);
+      MySensorData.println(GPS.lon);
+      MySensorData.print("Google Maps location: ");
+      MySensorData.print(GPS.latitudeDegrees, 4);
+      MySensorData.print(", ");
+      MySensorData.println(GPS.longitudeDegrees, 4);
+      MySensorData.print("Speed (knots): ");
+      MySensorData.println(GPS.speed);
+      MySensorData.print("Heading: ");
+      MySensorData.println(GPS.angle);
+      MySensorData.print("Altitude: ");
+      MySensorData.println(GPS.altitude);
+    }
+    MySensorData.println("-------------------------------------");
 
   tempchange = tempC - prevTemp;
   tdschange = tdsValue - prevTds;
@@ -200,4 +251,16 @@ void loop() {
   }
 }
 delay(10);
+}
+
+void clearGPS() {
+  while (!GPS.newNMEAreceived()) {
+    c = GPS.read();
+  }
+  GPS.parse(GPS.lastNMEA());
+
+  while (!GPS.newNMEAreceived()) {
+    c = GPS.read();
+  }
+  GPS.parse(GPS.lastNMEA());
 }
