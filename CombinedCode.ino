@@ -6,7 +6,12 @@
 #include <DallasTemperature.h>
 #include <SD.h>
 #include <SPI.h>
- 
+#include "RTClib.h"
+
+RTC_DS1307 rtc;
+
+char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+
 #define ONE_WIRE_BUS 2
 #define TdsSensorPin A1
 GravityTDS gravityTds;
@@ -58,6 +63,12 @@ OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
 
 void setup() {
+  if (! rtc.isrunning()) {
+    mySensorData.println("RTC is NOT running, let's set the time!");
+    // When time needs to be set on a new device, or after a power loss, the
+    // following line sets the RTC to the date & time this sketch was compiled
+    rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+
   Serial.begin(9600);
   gravityTds.setPin(TdsSensorPin);
   gravityTds.setAref(5.0);
@@ -121,6 +132,21 @@ void loop() {
     mySensorData.print(turbidity);
     mySensorData.println(",");
     mySensorData.print(Ec);
+    DateTime now = rtc.now();
+    mySensorData.print(now.year(), DEC);
+    mySensorData.print('/');
+    mySensorData.print(now.month(), DEC);
+    mySensorData.print('/');
+    mySensorData.print(now.day(), DEC);
+    mySensorData.print(" (");
+    mySensorData.print(daysOfTheWeek[now.dayOfTheWeek()]);
+    mySensorData.print(") ");
+    mySensorData.print(now.hour(), DEC);
+    mySensorData.print(':');
+    mySensorData.print(now.minute(), DEC);
+    mySensorData.print(':');
+    mySensorData.print(now.second(), DEC);
+    mySensorData.println();
 
   tempchange = tempC - prevTemp;
   tdschange = tdsValue - prevTds;
