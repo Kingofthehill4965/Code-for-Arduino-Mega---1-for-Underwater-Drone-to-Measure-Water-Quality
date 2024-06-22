@@ -44,7 +44,7 @@ float tdschange = 0;
 float phchange = 0;
 float turbiditychange = 0;
 
-const int motorPin1 = 40;
+const int motorpin1 = 40;
 const int motorpin2 = 41;
 const int motorpin3 = 42;
 const int motorpin4 = 43;
@@ -75,16 +75,16 @@ void setup() {
   pinMode(10,OUTPUT);
   SD.begin(chipSelect);
   sensors.begin();
-  pinMode(motorPin1, OUTPUT);
-  pinMode(motorPin2, OUTPUT);
-  pinMode(motorPin3, OUTPUT);
-  pinMode(motorPin4, OUTPUT);
-  pinMode(motorPin5, OUTPUT);
-  pinMode(motorPin6, OUTPUT);
-  pinMode(motorPin7, OUTPUT);
-  pinMode(motorPin8, OUTPUT);
-  pinMode(motorPin9, OUTPUT);
-  pinMode(motorPin10, OUTPUT);
+  pinMode(motorpin1, OUTPUT);
+  pinMode(motorpin2, OUTPUT);
+  pinMode(motorpin3, OUTPUT);
+  pinMode(motorpin4, OUTPUT);
+  pinMode(motorpin5, OUTPUT);
+  pinMode(motorpin6, OUTPUT);
+  pinMode(motorpin7, OUTPUT);
+  pinMode(motorpin8, OUTPUT);
+  pinMode(motorpin9, OUTPUT);
+  pinMode(motorpin10, OUTPUT);
   pinMode(rotormotorpin, OUTPUT);
   significantchangeid = 1;
   GPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGA);
@@ -133,7 +133,7 @@ void loop() {
   int sensorValue = analogRead(A2);
   int turbidity =map(sensorValue,0,700,100,0);  
   if(mySensorData){
-    MySensorData.println("1");
+    mySensorData.println("1");
     mySensorData.print(tdsValue,0);
     mySensorData.println(",");
     mySensorData.print(ph_act);
@@ -153,67 +153,63 @@ void loop() {
       c = GPS.read();
     }
     GPS.parse(GPS.lastNMEA());
-    MySensorData.print("Time: ");
-    MySensorData.print(GPS.hour, DEC);
-    MySensorData.print(':');
-    MySensorData.print(GPS.minute, DEC);
-    MySensorData.print(':');
-    MySensorData.print(GPS.seconds, DEC);
-    MySensorData.print('.');
-    MySensorDataorData.println(GPS.milliseconds);
-    MySensorData.print("Date: ");
-    MySensorData.print(GPS.day, DEC);
-    MySensorData.print('/');
-    MySensorData.print(GPS.month, DEC);
-    MySensorData.print("/20");
-    MySensorData.println(GPS.year, DEC);
-    MySensorData.print("Fix: ");
-    MySensorData.print(GPS.fix);
-    MySensorData.print(" quality: ");
-    MySensorData.println(GPS.fixquality);
-    MySensorData.print("Satellites: ");
-    MySensorData.println(GPS.satellites);
+    mySensorData.print("Time: ");
+    mySensorData.print(GPS.hour, DEC);
+    mySensorData.print(':');
+    mySensorData.print(GPS.minute, DEC);
+    mySensorData.print(':');
+    mySensorData.print(GPS.seconds, DEC);
+    mySensorData.print('.');
+    mySensorData.println(GPS.milliseconds);
+    mySensorData.print("Date: ");
+    mySensorData.print(GPS.day, DEC);
+    mySensorData.print('/');
+    mySensorData.print(GPS.month, DEC);
+    mySensorData.print("/20");
+    mySensorData.println(GPS.year, DEC);
+    mySensorData.print("Fix: ");
+    mySensorData.print(GPS.fix);
+    mySensorData.print(" quality: ");
+    mySensorData.println(GPS.fixquality);
+    mySensorData.print("Satellites: ");
+    mySensorData.println(GPS.satellites);
     if (GPS.fix) {
-      MySensorData.print("Location: ");
-      MySensorData.print(GPS.latitude, 4);
-      MySensorData.print(GPS.lat);
-      MySensorData.print(", ");
-      MySensorData.print(GPS.longitude, 4);
-      MySensorData.println(GPS.lon);
-      MySensorData.print("Google Maps location: ");
-      MySensorData.print(GPS.latitudeDegrees, 4);
-      MySensorData.print(", ");
-      MySensorData.println(GPS.longitudeDegrees, 4);
-      MySensorData.print("Speed (knots): ");
-      MySensorData.println(GPS.speed);
-      MySensorData.print("Heading: ");
-      MySensorData.println(GPS.angle);
-      MySensorData.print("Altitude: ");
-      MySensorData.println(GPS.altitude);
+      mySensorData.print("Location: ");
+      mySensorData.print(GPS.latitude, 4);
+      mySensorData.print(GPS.lat);
+      mySensorData.print(", ");
+      mySensorData.print(GPS.longitude, 4);
+      mySensorData.println(GPS.lon);
+      mySensorData.print("Google Maps location: ");
+      mySensorData.print(GPS.latitudeDegrees, 4);
+      mySensorData.print(", ");
+      mySensorData.println(GPS.longitudeDegrees, 4);
+      mySensorData.print("Speed (knots): ");
+      mySensorData.println(GPS.speed);
+      mySensorData.print("Heading: ");
+      mySensorData.println(GPS.angle);
+      mySensorData.print("Altitude: ");
+      mySensorData.println(GPS.altitude);
     }
-    MySensorData.println("-------------------------------------");
+    mySensorData.println("-------------------------------------");
 
   tempchange = tempC - prevTemp;
   tdschange = tdsValue - prevTds;
   phchange = ph_act - prevPh;
   turbiditychange = turbidity - prevTurbidity;
   if (abs(tempchange) > temp_threshold){
-    log = "Temperature," + " Change : " + tempchange + ", Previous : " + prevTemp + ", Current : " + tempC;
     significantchange = true;
     prevTemp = tempC;
   }
   if (abs(tdschange) > tds_threshold){
-    log = "TDS," + " Change : " + tdschange + ", Previous : " + prevTds + ", Current : " + tdsValue;
     significantchange = true;
     prevTds = tdsValue;
   }
   if (abs(phchange) > ph_threshold){
-    log = "PH," + " Change : " + phchange + ", Previous : " + prevPh + ", Current : " + ph_act;
     significantchange = true;
     prevPh = ph_act;
   }
   if (abs(turbiditychange) > turbidity_threshold){
-    log = "Turbidity," + " Change : " + turbiditychange + ", Previous : " + prevTurbidity + ", Current : " + turbidity;
     significantchange = true;
     prevTurbidity = turbidity;
   }
@@ -221,18 +217,17 @@ void loop() {
     for (int i=1; i<11; i++){
       if (significantchangeid == i){
         significantchange = false;
-        digitalWrite(motorPin1 + i, HIGH);
+        digitalWrite(motorpin1 + i, HIGH);
         delay(15000);
         mySensorData.println("Significant change, ");
         mySensorData.println("id : -");
         mySensorData.print(significantchangeid);
         mySensorData.print("reason : ");
-        mySensorData.print(log);
-        digitalWrite(motorPin1 + i, LOW);
+        digitalWrite(motorpin1 + i, LOW);
         significantchangeid = significantchangeid + 1;
         digitalWrite(rotormotorpin, HIGH);
         delay(2500);
-        digitalWrite(rotormotorpin, LOW);-
+        digitalWrite(rotormotorpin, LOW);
         break;
       }
     }
@@ -240,7 +235,7 @@ void loop() {
       significantchange = false;
     }
     else {
-      mySensorData.print("ERROR 404 : Autonomous Sampling error.")
+      mySensorData.print("ERROR 404 : Autonomous Sampling error.");
     }
   }
 }
