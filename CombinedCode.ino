@@ -56,6 +56,8 @@ const int motorpin9 = 48;
 const int motorpin10 = 49;
 const int rotormotorpin = 50;
 
+char logreason;
+
 int chipSelect= 53;
 File mySensorData;
 
@@ -198,20 +200,20 @@ void loop() {
   phchange = ph_act - prevPh;
   turbiditychange = turbidity - prevTurbidity;
   if (abs(tempchange) > temp_threshold){
+    logreason = "Temperature";
     significantchange = true;
-    prevTemp = tempC;
   }
   if (abs(tdschange) > tds_threshold){
+    logreason = "TDS";
     significantchange = true;
-    prevTds = tdsValue;
   }
   if (abs(phchange) > ph_threshold){
+    logreason = "PH";
     significantchange = true;
-    prevPh = ph_act;
   }
   if (abs(turbiditychange) > turbidity_threshold){
+    logreason = "Turbidity";
     significantchange = true;
-    prevTurbidity = turbidity;
   }
   if (significantchange){
     for (int i=1; i<11; i++){
@@ -223,11 +225,47 @@ void loop() {
         mySensorData.println("id : -");
         mySensorData.print(significantchangeid);
         mySensorData.print("reason : ");
+        mySensorData.print(logreason);
+        mySensorData.print("Change : ");
+        if (logreason == "Temperature"){
+          mySensorData.print(tempchange);
+          mySensorData.print("Previous : ");
+          mySensorData.print(prevTemp);
+          mySensorData.print("New : ");
+          mySensorData.print(tempC);
+        }
+        if (logreason == "TDS"){
+          mySensorData.print(tdschange);
+          mySensorData.print("Previous : ");
+          mySensorData.print(prevTds);
+          mySensorData.print("New : ");
+          mySensorData.print(tdsValue);
+        }
+        if (logreason == "PH"){
+          mySensorData.print(phchange);
+          mySensorData.print("Previous : ");
+          mySensorData.print(prevPh);
+          mySensorData.print("New : ");
+          mySensorData.print(ph_act);
+        }
+        if (logreason == "Turbidity"){
+          mySensorData.print(turbiditychange);
+          mySensorData.print("Previous : ");
+          mySensorData.print(prevTurbidity);
+          mySensorData.print("New : ");
+          mySensorData.print(turbidity);
+        }
+        mySensorData.print("Sample id: ");
+        mySensorData.print(significantchangeid);
         digitalWrite(motorpin1 + i, LOW);
         significantchangeid = significantchangeid + 1;
         digitalWrite(rotormotorpin, HIGH);
         delay(2500);
         digitalWrite(rotormotorpin, LOW);
+        prevTemp = tempC;
+        prevTds = tdsValue;
+        prevPh = ph_act;
+        prevTurbidity = turbidity;
         break;
       }
     }
