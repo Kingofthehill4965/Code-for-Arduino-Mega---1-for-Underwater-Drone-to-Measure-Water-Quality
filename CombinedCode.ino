@@ -16,7 +16,7 @@ GravityTDS gravityTds;
 float significantchangeid;
  
 unsigned char data[4]={};
-char c;
+char g;
 
 float tempC; 
 float temperature = tempC,tdsValue = 0;
@@ -105,39 +105,40 @@ void loop() {
   float voltage = pressuresensorValue * (5.0 / 1023.0);
   float baselinevoltage = 0;
   float pressure = (voltage - baselinevoltage) * (100/ 4.5 - baselinevoltage);
-  for(int i=0;i<4;i++){
-       data[i]=mySerial2.read();
-     }
+  for(int a=0;a<4;a++){
+       data[a]=mySerial2.read();
+  }
   while(mySerial2.read()==0xff);
     mySerial2.flush();
-  if(data[0]==0xff){
-    int sum;
-    sum=(data[0]+data[1]+data[2])&0x00FF;
-    if(sum==data[3]){
+    if(data[0]==0xff){
+      int sum;
+      sum=(data[0]+data[1]+data[2])&0x00FF;
+      if(sum==data[3]){
         distance=(data[1]<<8)+data[2];
         distance=distance / 10;
-        }
-     }
+      }
+    }
   mySensorData = SD.open("test.txt",FILE_WRITE);
   gravityTds.setTemperature(temperature);
   gravityTds.update();
   tdsValue = gravityTds.getTdsValue();
   Ec = (tdsValue * 2)/ 1000;
-  for(int i=0;i<10;i++){ 
-  buffer_arr[i]=analogRead(A0);
-    }
-    for(int i=0;i<9;i++){
-    for(int j=i+1;j<10;j++){
-    if(buffer_arr[i]>buffer_arr[j]){
-      temp=buffer_arr[i];
-      buffer_arr[i]=buffer_arr[j];
-      buffer_arr[j]=temp;
+  for(int b=0;b<10;b++){ 
+    buffer_arr[b]=analogRead(A0);
+  }
+  for(int c=0;c<9;c++){
+    for(int d=d+1;d<10;d++){
+      if(buffer_arr[c]>buffer_arr[d]){
+      temp=buffer_arr[c];
+      buffer_arr[c]=buffer_arr[d];
+      buffer_arr[d]=temp;
+      }
     }
   }
-}
   avgval=0;
-  for(int i=2;i<8;i++)
-  avgval+=buffer_arr[i];
+  for(int e=2;e<8;e++){
+    avgval+=buffer_arr[i];
+  }
   float volt=(float)avgval*5.0/1024/6;
   float ph_act = -5.70 * volt + calibration_value;
   sensors.requestTemperatures();
@@ -170,7 +171,7 @@ void loop() {
     mySensorData.print(light);
     clearGPS();
     while (!GPS.newNMEAreceived()) {
-      c = GPS.read();
+      g = GPS.read();
     }
     GPS.parse(GPS.lastNMEA());
     mySensorData.print("Time: ");
@@ -234,10 +235,10 @@ void loop() {
     significantchange = true;
   }
   if (significantchange){
-    for (int i=1; i<11; i++){
-      if (significantchangeid == i){
+    for (int f=1; f<11; f++){
+      if (significantchangeid == f){
         significantchange = false;
-        digitalWrite(motorpin1 + i, HIGH);
+        digitalWrite(motorpin1 + f, HIGH);
         delay(15000);
         mySensorData.println("Significant change, ");
         mySensorData.println("id : -");
@@ -275,7 +276,7 @@ void loop() {
         }
         mySensorData.print("Sample id: ");
         mySensorData.print(significantchangeid);
-        digitalWrite(motorpin1 + i, LOW);
+        digitalWrite(motorpin1 + f, LOW);
         significantchangeid = significantchangeid + 1;
         digitalWrite(rotormotorpin, HIGH);
         delay(2500);
@@ -300,12 +301,12 @@ delay(10);
 
 void clearGPS() {
   while (!GPS.newNMEAreceived()) {
-    c = GPS.read();
+    g = GPS.read();
   }
   GPS.parse(GPS.lastNMEA());
 
   while (!GPS.newNMEAreceived()) {
-    c = GPS.read();
+    g = GPS.read();
   }
   GPS.parse(GPS.lastNMEA());
 }
