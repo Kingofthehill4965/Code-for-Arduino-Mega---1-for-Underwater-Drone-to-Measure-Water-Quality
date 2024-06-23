@@ -1,3 +1,4 @@
+#define pHSensorPin A0;
 float ph_calibration_value = 21.34;
 unsigned long int avgval; 
 int buffer_arr[10],temp;
@@ -7,7 +8,7 @@ void setup()
 }
 void loop(){
   for(int b=0;b<10;b++){
-    buffer_arr[b]=analogRead(A0);
+    buffer_arr[b]=analogRead(pHSensorPin);
     delay(30);
   }
   for(int c=0;c<9;c++){
