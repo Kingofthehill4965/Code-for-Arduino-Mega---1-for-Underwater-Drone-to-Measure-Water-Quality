@@ -26,6 +26,9 @@ int phval = 0;
 unsigned long int avgval; 
 int buffer_arr[10],temp;
 
+int pressurepin = A8;
+int soundsensor = 6;
+
 bool significantchange = false;
 
 const float temp_threshold = 10;
@@ -56,6 +59,8 @@ const int motorpin9 = 48;
 const int motorpin10 = 49;
 const int rotormotorpin = 50;
 
+const int lightpin = A4;
+
 char logreason;
 
 int chipSelect= 53;
@@ -76,6 +81,7 @@ void setup() {
   gravityTds.begin(); 
   pinMode(10,OUTPUT);
   SD.begin(chipSelect);
+  pinMode(soundsensor, INPUT);
   sensors.begin();
   pinMode(motorpin1, OUTPUT);
   pinMode(motorpin2, OUTPUT);
@@ -94,6 +100,11 @@ void setup() {
 }
 
 void loop() {  
+  light = analogRead(lightpin);
+  int pressuresensorValue = analogRead(pressurepin);
+  float voltage = pressuresensorValue * (5.0 / 1023.0);
+  float baselinevoltage = 0;
+  float pressure = (voltage - baselinevoltage) * (100/ 4.5 - baselinevoltage);
   for(int i=0;i<4;i++){
        data[i]=mySerial2.read();
      }
@@ -134,6 +145,7 @@ void loop() {
   float tempF = sensors.getTempFByIndex(0);
   int sensorValue = analogRead(A2);
   int turbidity =map(sensorValue,0,700,100,0);  
+  int data = digitalRead(sensor);
   if(mySensorData){
     mySensorData.println("1");
     mySensorData.print(tdsValue,0);
@@ -150,6 +162,12 @@ void loop() {
     mySensorData.print("Distance from riverbed : ");
     mySensorData.print(distance);
     mySensorData.print("cm");
+    mySensorData.print("Sound (decibels)");
+    mySensorData.print(data);
+    mySensorData.print("Pressure : ");
+    mySensorData.print(pressure);
+    mySensorData.print("Light : ");
+    mySensorData.print(light);
     clearGPS();
     while (!GPS.newNMEAreceived()) {
       c = GPS.read();
