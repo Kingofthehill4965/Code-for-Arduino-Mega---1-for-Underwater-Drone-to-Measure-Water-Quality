@@ -12,6 +12,8 @@
 #define ONE_WIRE_BUS 2
 #define TdsSensorPin A1
 #define pHSensorPin A0
+#define temperatureSensorPin = 2;
+
 GravityTDS gravityTds;
 
 float significantchangeid;
@@ -19,8 +21,9 @@ float significantchangeid;
 unsigned char data[4]={};
 char g;
 
-float tempC; 
-float temperature = tempC,tdsValue = 0;
+float temperatureCelsius;
+float temperatureFahrenheit;
+float temperature = temperatureCelsius, tdsValue = 0;
 float Ec;
 float ph_calibration_value = 21.34;
 unsigned long int avgval; 
@@ -70,9 +73,8 @@ SoftwareSerial mySerial2(11,10); // RX, TX
 SoftwareSerial mySerial(3, 2);
 Adafruit_GPS GPS(&mySerial);
 
-OneWire oneWire(ONE_WIRE_BUS);
-
-DallasTemperature sensors(&oneWire);
+OneWire oneWire(temperatureSensorPin);
+DallasTemperature temperatureSensor(&oneWire);
 
 void setup() {
   gravityTds.setPin(TdsSensorPin);
@@ -82,7 +84,7 @@ void setup() {
   pinMode(10,OUTPUT);
   SD.begin(chipSelect);
   pinMode(soundsensor, INPUT);
-  sensors.begin();
+  temperatureSensor.begin();
   pinMode(motorpin1, OUTPUT);
   pinMode(motorpin2, OUTPUT);
   pinMode(motorpin3, OUTPUT);
@@ -141,9 +143,9 @@ void loop() {
   }
   float volt=(float)avgval*5.0/1024/6;
   float ph = -5.70 * volt + ph_calibration_value;
-  sensors.requestTemperatures();
-  float tempC = sensors.getTempCByIndex(0);
-  float tempF = sensors.getTempFByIndex(0);
+  temperatureSensor.requestTemperatures();
+  temperatureCelsius = sensors.getTempCByIndex(0);
+  float temperatureFarenheit = sensors.getTempFByIndex(0);
   int sensorValue = analogRead(A2);
   int turbidity =map(sensorValue,0,700,100,0);  
   int data = digitalRead(soundsensor);
@@ -153,9 +155,9 @@ void loop() {
     mySensorData.println(",");
     mySensorData.print(ph);
     mySensorData.println(",");
-    mySensorData.print(tempC);
+    mySensorData.print(temperatureCelsius);
     mySensorData.println(",");
-    mySensorData.print(tempF);
+    mySensorData.print(temperatureFarenheit);
     mySensorData.println(",");
     mySensorData.print(turbidity);
     mySensorData.println(",");
@@ -214,7 +216,7 @@ void loop() {
     }
     mySensorData.println("-------------------------------------");
 
-  tempchange = tempC - prevTemp;
+  tempchange = temperatureCelsius - prevTemp;
   tdschange = tdsValue - prevTds;
   phchange = ph - prevPh;
   turbiditychange = turbidity - prevTurbidity;
@@ -251,7 +253,7 @@ void loop() {
           mySensorData.print("Previous : ");
           mySensorData.print(prevTemp);
           mySensorData.print("New : ");
-          mySensorData.print(tempC);
+          mySensorData.print(temperatureCelsius);
         }
         if (logreason == "TDS"){
           mySensorData.print(tdschange);
@@ -281,7 +283,7 @@ void loop() {
         digitalWrite(rotormotorpin, HIGH);
         delay(2500);
         digitalWrite(rotormotorpin, LOW);
-        prevTemp = tempC;
+        prevTemp = temperatureCelsius;
         prevTds = tdsValue;
         prevPh = ph;
         prevTurbidity = turbidity;
