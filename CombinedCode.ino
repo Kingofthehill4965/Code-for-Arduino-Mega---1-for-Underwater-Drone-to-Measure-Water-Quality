@@ -21,8 +21,7 @@ char g;
 float tempC; 
 float temperature = tempC,tdsValue = 0;
 float Ec;
-float calibration_value = 21.34;
-int phval = 0; 
+float ph_calibration_value = 21.34;
 unsigned long int avgval; 
 int buffer_arr[10],temp;
 
@@ -127,7 +126,7 @@ void loop() {
     buffer_arr[b]=analogRead(A0);
   }
   for(int c=0;c<9;c++){
-    for(int d=d+1;d<10;d++){
+    for(int d=c+1;d<10;d++){
       if(buffer_arr[c]>buffer_arr[d]){
       temp=buffer_arr[c];
       buffer_arr[c]=buffer_arr[d];
@@ -137,10 +136,10 @@ void loop() {
   }
   avgval=0;
   for(int e=2;e<8;e++){
-    avgval+=buffer_arr[i];
+    avgval+=buffer_arr[e];
   }
   float volt=(float)avgval*5.0/1024/6;
-  float ph_act = -5.70 * volt + calibration_value;
+  float ph = -5.70 * volt + ph_calibration_value;
   sensors.requestTemperatures();
   float tempC = sensors.getTempCByIndex(0);
   float tempF = sensors.getTempFByIndex(0);
@@ -151,7 +150,7 @@ void loop() {
     mySensorData.println("1");
     mySensorData.print(tdsValue,0);
     mySensorData.println(",");
-    mySensorData.print(ph_act);
+    mySensorData.print(ph);
     mySensorData.println(",");
     mySensorData.print(tempC);
     mySensorData.println(",");
@@ -216,7 +215,7 @@ void loop() {
 
   tempchange = tempC - prevTemp;
   tdschange = tdsValue - prevTds;
-  phchange = ph_act - prevPh;
+  phchange = ph - prevPh;
   turbiditychange = turbidity - prevTurbidity;
   if (abs(tempchange) > temp_threshold){
     logreason = "Temperature";
@@ -265,7 +264,7 @@ void loop() {
           mySensorData.print("Previous : ");
           mySensorData.print(prevPh);
           mySensorData.print("New : ");
-          mySensorData.print(ph_act);
+          mySensorData.print(ph);
         }
         if (logreason == "Turbidity"){
           mySensorData.print(turbiditychange);
@@ -283,7 +282,7 @@ void loop() {
         digitalWrite(rotormotorpin, LOW);
         prevTemp = tempC;
         prevTds = tdsValue;
-        prevPh = ph_act;
+        prevPh = ph;
         prevTurbidity = turbidity;
         break;
       }
