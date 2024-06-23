@@ -9,6 +9,7 @@ int buffer_arr[10],temp;
 void setup(){
  Serial.begin(9600);
 }
+
 void loop(){
   for(int b=0;b<10;b++){
     buffer_arr[b]=analogRead(pHSensorPin);
