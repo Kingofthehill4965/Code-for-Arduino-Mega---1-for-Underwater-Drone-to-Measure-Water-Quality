@@ -11,9 +11,6 @@
 
 #define ONE_WIRE_BUS 2
 #define TdsSensorPin A1
-#define pHSensorPin A0
-#define temperatureSensorPin = 2;
-
 GravityTDS gravityTds;
 
 float significantchangeid;
@@ -21,11 +18,11 @@ float significantchangeid;
 unsigned char data[4]={};
 char g;
 
-float temperatureCelsius;
-float temperatureFahrenheit;
-float temperature = temperatureCelsius, tdsValue = 0;
+float tempC; 
+float temperature = tempC,tdsValue = 0;
 float Ec;
-float ph_calibration_value = 21.34;
+float calibration_value = 21.34;
+int phval = 0; 
 unsigned long int avgval; 
 int buffer_arr[10],temp;
 
@@ -73,8 +70,9 @@ SoftwareSerial mySerial2(11,10); // RX, TX
 SoftwareSerial mySerial(3, 2);
 Adafruit_GPS GPS(&mySerial);
 
-OneWire oneWire(temperatureSensorPin);
-DallasTemperature temperatureSensor(&oneWire);
+OneWire oneWire(ONE_WIRE_BUS);
+
+DallasTemperature sensors(&oneWire);
 
 void setup() {
   gravityTds.setPin(TdsSensorPin);
@@ -84,7 +82,7 @@ void setup() {
   pinMode(10,OUTPUT);
   SD.begin(chipSelect);
   pinMode(soundsensor, INPUT);
-  temperatureSensor.begin();
+  sensors.begin();
   pinMode(motorpin1, OUTPUT);
   pinMode(motorpin2, OUTPUT);
   pinMode(motorpin3, OUTPUT);
@@ -126,10 +124,10 @@ void loop() {
   tdsValue = gravityTds.getTdsValue();
   Ec = (tdsValue * 2)/ 1000;
   for(int b=0;b<10;b++){ 
-    buffer_arr[b]=pHSensorPin(A0);
+    buffer_arr[b]=analogRead(A0);
   }
   for(int c=0;c<9;c++){
-    for(int d=c+1;d<10;d++){
+    for(int d=d+1;d<10;d++){
       if(buffer_arr[c]>buffer_arr[d]){
       temp=buffer_arr[c];
       buffer_arr[c]=buffer_arr[d];
@@ -142,10 +140,10 @@ void loop() {
     avgval+=buffer_arr[e];
   }
   float volt=(float)avgval*5.0/1024/6;
-  float ph = -5.70 * volt + ph_calibration_value;
-  temperatureSensor.requestTemperatures();
-  temperatureCelsius = sensors.getTempCByIndex(0);
-  temperatureFarenheit = sensors.getTempFByIndex(0);
+  float ph_act = -5.70 * volt + calibration_value;
+  sensors.requestTemperatures();
+  float tempC = sensors.getTempCByIndex(0);
+  float tempF = sensors.getTempFByIndex(0);
   int sensorValue = analogRead(A2);
   int turbidity =map(sensorValue,0,700,100,0);  
   int data = digitalRead(soundsensor);
@@ -153,11 +151,11 @@ void loop() {
     mySensorData.println("1");
     mySensorData.print(tdsValue,0);
     mySensorData.println(",");
-    mySensorData.print(ph);
+    mySensorData.print(ph_act);
     mySensorData.println(",");
-    mySensorData.print(temperatureCelsius);
+    mySensorData.print(tempC);
     mySensorData.println(",");
-    mySensorData.print(temperatureFarenheit);
+    mySensorData.print(tempF);
     mySensorData.println(",");
     mySensorData.print(turbidity);
     mySensorData.println(",");
@@ -216,9 +214,9 @@ void loop() {
     }
     mySensorData.println("-------------------------------------");
 
-  tempchange = temperatureCelsius - prevTemp;
+  tempchange = tempC - prevTemp;
   tdschange = tdsValue - prevTds;
-  phchange = ph - prevPh;
+  phchange = ph_act - prevPh;
   turbiditychange = turbidity - prevTurbidity;
   if (abs(tempchange) > temp_threshold){
     logreason = "Temperature";
@@ -253,7 +251,7 @@ void loop() {
           mySensorData.print("Previous : ");
           mySensorData.print(prevTemp);
           mySensorData.print("New : ");
-          mySensorData.print(temperatureCelsius);
+          mySensorData.print(tempC);
         }
         if (logreason == "TDS"){
           mySensorData.print(tdschange);
@@ -267,7 +265,7 @@ void loop() {
           mySensorData.print("Previous : ");
           mySensorData.print(prevPh);
           mySensorData.print("New : ");
-          mySensorData.print(ph);
+          mySensorData.print(ph_act);
         }
         if (logreason == "Turbidity"){
           mySensorData.print(turbiditychange);
@@ -283,9 +281,9 @@ void loop() {
         digitalWrite(rotormotorpin, HIGH);
         delay(2500);
         digitalWrite(rotormotorpin, LOW);
-        prevTemp = temperatureCelsius;
+        prevTemp = tempC;
         prevTds = tdsValue;
-        prevPh = ph;
+        prevPh = ph_act;
         prevTurbidity = turbidity;
         break;
       }
