@@ -145,7 +145,7 @@ void loop() {
   float ph = -5.70 * volt + ph_calibration_value;
   temperatureSensor.requestTemperatures();
   temperatureCelsius = sensors.getTempCByIndex(0);
-  float temperatureFarenheit = sensors.getTempFByIndex(0);
+  temperatureFarenheit = sensors.getTempFByIndex(0);
   int sensorValue = analogRead(A2);
   int turbidity =map(sensorValue,0,700,100,0);  
   int data = digitalRead(soundsensor);
