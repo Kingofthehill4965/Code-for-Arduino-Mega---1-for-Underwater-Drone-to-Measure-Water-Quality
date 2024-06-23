@@ -11,6 +11,7 @@
 
 #define ONE_WIRE_BUS 2
 #define TdsSensorPin A1
+#define pHSensorPin A0
 GravityTDS gravityTds;
 
 float significantchangeid;
@@ -123,7 +124,7 @@ void loop() {
   tdsValue = gravityTds.getTdsValue();
   Ec = (tdsValue * 2)/ 1000;
   for(int b=0;b<10;b++){ 
-    buffer_arr[b]=analogRead(A0);
+    buffer_arr[b]=pHSensorPin(A0);
   }
   for(int c=0;c<9;c++){
     for(int d=c+1;d<10;d++){
