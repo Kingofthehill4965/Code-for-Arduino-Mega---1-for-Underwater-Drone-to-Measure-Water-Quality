@@ -100,7 +100,7 @@ void setup() {
 }
 
 void loop() {  
-  light = analogRead(lightpin);
+  int light = analogRead(lightpin);
   int pressuresensorValue = analogRead(pressurepin);
   float voltage = pressuresensorValue * (5.0 / 1023.0);
   float baselinevoltage = 0;
@@ -145,7 +145,7 @@ void loop() {
   float tempF = sensors.getTempFByIndex(0);
   int sensorValue = analogRead(A2);
   int turbidity =map(sensorValue,0,700,100,0);  
-  int data = digitalRead(sensor);
+  int data = digitalRead(soundsensor);
   if(mySensorData){
     mySensorData.println("1");
     mySensorData.print(tdsValue,0);
