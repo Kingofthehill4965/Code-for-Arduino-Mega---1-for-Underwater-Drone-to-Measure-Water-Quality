@@ -1,7 +1,6 @@
 int pressurepin = A8;
 
 void setup(){
-  pinMode(pressurepin, INPUT);
   Serial.begin(9600);
 }
 
