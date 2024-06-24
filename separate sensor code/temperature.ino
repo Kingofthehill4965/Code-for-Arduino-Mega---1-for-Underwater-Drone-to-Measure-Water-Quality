@@ -17,7 +17,7 @@ void setup(){
 void loop(){
   temperatureSensor.requestTemperatures();
   temperatureCelsius = temperatureSensor.getTempCByIndex(0);
-  temperatureFahrenheit = tempCelsius * 9 / 5 + 32;
+  temperatureFahrenheit = temperatureSensor.getTempFByIndex(0);
   
   Serial.print("Temperature: ");
   Serial.print(tempCelsius);
