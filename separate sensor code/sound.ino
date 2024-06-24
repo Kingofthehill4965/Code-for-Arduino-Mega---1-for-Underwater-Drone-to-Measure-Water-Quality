@@ -1,12 +1,12 @@
-int soundsensor = 6;
+#define soundSensorPin = 6;
 
 void setup(){
-  pinMode(soundsensor, INPUT);
+  pinMode(soundSensorPin, INPUT);
   Serial.begin(9600);
 }
 
 void loop(){
-  int data = digitalRead(sensor);
+  int sound = digitalRead(soundSensorPin);
   mySensorData.print("Sound (decibels)");
-  mySensorData.print(data);
+  mySensorData.print(sound);
 }
