@@ -54,7 +54,7 @@ void loop(){
   }
   Serial.println("-------------------------------------");
 
-void clearGPS() {
+void clearGPS(){
   while (!GPS.newNMEAreceived()) {
     c = GPS.read();
   }
