@@ -6,7 +6,7 @@ void setup(){
 
 void loop(){
   int turbiditySensorValue = analogRead(turbiditySensorPin);
-  float turbidity = sensorValue * (5.0 / 1024);
+  float turbidity = turbiditySensorValue * (5.0 / 1024);
   Serial.println(turbidity);
   delay(1000);
 }
